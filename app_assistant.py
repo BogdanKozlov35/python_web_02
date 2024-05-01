@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from collections import UserDict, defaultdict
 from datetime import datetime, timedelta
 import pickle
+import sys
 
 class Messanger(ABC):
 
@@ -291,6 +292,8 @@ def main():
         messager = TerminalMessanger()
 
     elif user_interface == "2":
+
+        print(f"we dont have web interface yet")
         messager = WebMessanger()
         main()
 
