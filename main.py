@@ -30,9 +30,11 @@ class Field(ABC):
     def __str__(self):
         pass
 
+
 class Name(Field):
     def __str__(self):
         return str(self.value)
+
 
 class Phone(Field):
     def __init__(self, value):
@@ -43,6 +45,7 @@ class Phone(Field):
 
     def __str__(self):
         return str(self.value)
+
 
 class Birthday(Field):
     def __init__(self, value):
@@ -57,6 +60,7 @@ class Birthday(Field):
     def __str__(self):
         return str(self.value)
 
+
 def input_error(func):
     def wrapper(*args, **kwargs):
         try:
@@ -68,6 +72,7 @@ def input_error(func):
         except IndexError:
             return "IndexError"
     return wrapper
+
 
 class RecordInterface(ABC):
 
@@ -91,10 +96,11 @@ class RecordInterface(ABC):
     def __str__(self):
         pass
 
+
 class Record(RecordInterface):
 
     def __init__(self, name):
-        self.name = Name(name)
+        self.name = name
         self.phones = []
         self.birthday = None
 
@@ -120,12 +126,17 @@ class Record(RecordInterface):
 
 class AddressBook(UserDict):
 
+    def __init__(self):
+        super().__init__()
+
     @input_error
     def add_record(self, record):
         self.data[record.name.value] = record
+
     @input_error
     def find(self, name):
         return self.data.get(name)
+
     @input_error
     def delete(self, name):
         del self.data[name]
@@ -156,6 +167,7 @@ class AddressBook(UserDict):
 
         return f" birthdays nearest 7 days: {upcoming_birthdays}"
 
+
 @input_error
 def add_contact(args):
     name, phone, *_ = args
@@ -169,6 +181,7 @@ def add_contact(args):
         record.add_phone(phone)
     return message
 
+
 @input_error
 def add_birthday(args):
     name, birthday = args
@@ -178,6 +191,8 @@ def add_birthday(args):
         return f"Birthday added for {name}."
     else:
         return f"Contact '{name}' not found."
+
+
 @input_error
 def show_birthday(args):
     name, *_ = args
@@ -189,6 +204,8 @@ def show_birthday(args):
             return f"No birthday set for {name}."
     else:
         return f"Contact '{name}' not found."
+
+
 @input_error
 def all_contact():
     lines = []
@@ -202,6 +219,8 @@ def all_contact():
     header = "| {:<20} | {:<50} | {:<20} |".format("Name", "Phones", "Birthday")
     separator = "-" * len(header)
     return "\n".join([separator, header, separator] + lines + [separator])
+
+
 @input_error
 def edit_phone(args):
     name, phone_number, new_phone, *_ = args
@@ -216,6 +235,7 @@ def edit_phone(args):
     else:
         return "Phone number not found for this contact."
 
+
 def phone_username(args):
     name, *_ = args
     record = book.find(name)
@@ -226,7 +246,7 @@ def phone_username(args):
         return "Contact not found."
 
 
-class Saver(ABC): # you can add json for instance
+class Saver(ABC):  # you can add json for instance
     @abstractmethod
     def save_data(self):
         pass
@@ -241,7 +261,7 @@ class SaveDataPkl(Saver):
             pickle.dump(self.book, f)
 
 
-class Loader(ABC): # you can add json for instance
+class Loader(ABC):   # you can add json for instance
     @abstractmethod
     def load_data(self):
         pass
@@ -258,11 +278,12 @@ class LoadDataPkl(Loader):
         except FileNotFoundError:
             return AddressBook
 
-# Створення нової адресної книги
+
 def parse_input(user_input):
     cmd, *args = user_input.split()
     cmd = cmd.strip().lower()
     return cmd, *args
+
 
 def main():
 
@@ -285,7 +306,6 @@ def main():
     2 = Web
     >>> """)
 
-
     if user_interface == "1":
         messager = TerminalMessanger()
 
@@ -297,8 +317,6 @@ def main():
         messager = None
         print("unknown user interface")
         main()
-
-    book = AddressBook()
 
     while True:
         user_input = input("Enter a command: ")
@@ -319,6 +337,7 @@ def main():
             name, phone_number, new_phone, *_ = args
             messager.send_message(edit_phone(args))
         elif command == "phone":
+            # user phone number
             name, *_ = args
             messager.send_message(phone_username(name))
         elif command == "all":
